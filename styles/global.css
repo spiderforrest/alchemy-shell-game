@@ -33,3 +33,7 @@ header .logo {
 main {
     padding: 20px;
 }
+
+#cup-box {
+    display: flex;
+}
