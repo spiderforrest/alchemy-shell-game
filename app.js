@@ -1,11 +1,21 @@
-/* Imports */
+// get the one cup that's in html
+const cupHead = document.getElementById('cup-0');
 
-/* Get DOM Elements */
+// set the number of cups to one
+let totalCups = 1;
 
-/* State */
+function addCup() {
+    // clone the existing cup div
+    const newCup = cupHead.cloneNode(true);
+    // generate unique id for the cup and increment var
+    newCup.setAttribute('id', 'cup-' + totalCups);
+    totalCups++;
+    // add the cup to the list
+    document.getElementById('cup-box').appendChild(newCup);
+}
 
-/* Events */
-
-/* Display Functions */
-
-// (don't forget to call any display functions you want to run on page load!)
+// tmp testing button
+const tmpbutt = document.getElementById('tmpbutt');
+tmpbutt.addEventListener('click', () => {
+    addCup();
+});

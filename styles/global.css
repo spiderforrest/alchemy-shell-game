@@ -36,4 +36,5 @@ main {
 
 #cup-box {
     display: flex;
+    flex-wrap: wrap;
 }
