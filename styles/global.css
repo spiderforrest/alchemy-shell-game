@@ -38,3 +38,15 @@ main {
     display: flex;
     flex-wrap: wrap;
 }
+
+.correctLocation {
+    height: 40px;
+    width: 40px;
+    background-color: red;
+    border-radius: 50%;
+    margin: 20px;
+}
+
+.hidden {
+    display: none;
+}
