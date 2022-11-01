@@ -8,8 +8,8 @@ const winText = document.getElementById('wins');
 const lossText = document.getElementById('losses');
 const totalText = document.getElementById('total');
 
-// set the number of cups to one
-let totalCups = 1;
+// keep track of how many cups
+let lastCupIndex = 0;
 // track last win to mark what to undo instead of looping over everything bc '''performance'''
 let lastLocation = 0;
 // and to not desync that here's a bool that blocks clicking twice
@@ -27,19 +27,19 @@ function addCup() {
     // clone the existing cup div
     const newCup = cupHead.cloneNode(true);
     // generate unique id for the cup
-    newCup.setAttribute('id', `cup-${totalCups}`);
+    newCup.setAttribute('id', `cup-${lastCupIndex}`);
     // add the cup to the list
     document.getElementById('cup-box').appendChild(newCup);
     // add event listener to the new cup
     newCup.addEventListener('click', () => {
         if (pickAllowed === true) handleGuess(newCup.getAttribute('id'));
     });
-    totalCups++;
+    lastCupIndex++;
 }
 
 function handleGuess(guessId) {
     // get random number and the index of the guess
-    const ballLocation = Math.floor(Math.random() * totalCups);
+    const ballLocation = Math.floor(Math.random() * lastCupIndex);
     // set the correct location so it can be unset by the reset button and block user from trying again
     lastLocation = ballLocation;
     pickAllowed = false;
@@ -80,12 +80,12 @@ function softReset() {
 // hard reset
 resetButton.addEventListener('click', () => {
     // delete the extra cups
-    for (let i = totalCups - 1; i > 0; i--) {
-        const target = document.getElementById(`cup-${i}`);
+    for (let i = lastCupIndex; i > 0; i--) {
+        const target = document.getElementById(`cup-${i - 1}`);
         target.remove();
     }
     // reset vars / dom
-    totalCups = 1;
+    lastCupIndex = 0;
     lastLocation = 0;
     pickAllowed = true;
     wins = 0;
@@ -103,9 +103,12 @@ tryAgainButton.addEventListener('click', () => {
 // remove cup
 removeCupButton.addEventListener('click', () => {
     softReset();
-    const target = document.getElementById(`cup-${totalCups - 1}`);
+    if (lastCupIndex === 0) return;
+    const target = document.getElementById(`cup-${lastCupIndex - 1}`);
+    lastCupIndex--;
     target.remove();
 });
+
 // add new cup
 addCupButton.addEventListener('click', () => {
     softReset();
