@@ -42,9 +42,10 @@ function handleGuess(guessId) {
     const correctLocation = document.getElementById(`cup-${ballLocation}`);
 
     // hide the correct cup and show the correct ball
+    console.log(correctLocation);
     const cupImg = correctLocation.firstChild;
-    cupImg.classList.add('hidden');
     const ballImg = correctLocation.lastChild;
+    cupImg.classList.add('hidden');
     ballImg.classList.remove('hidden');
 
     // then if the user guess is correct, increment the correct guesses
@@ -63,7 +64,10 @@ function handleGuess(guessId) {
 // reset button
 resetButton.addEventListener('click', () => {
     const target = document.getElementById(`cup-${lastLocation}`);
-    target.classList.remove('correct-location');
+    const targetCup = target.firstChild;
+    const targetBall = target.lastChild;
+    targetCup.classList.remove('hidden');
+    targetBall.classList.add('hidden');
 });
 
 // add new cup
