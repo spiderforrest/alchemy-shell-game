@@ -1,6 +1,7 @@
 // get the one cup that's in html
 const cupHead = document.getElementById('cup-0');
 const addCupButton = document.getElementById('add-cup');
+const removeCupButton = document.getElementById('remove-cup');
 const resetButton = document.getElementById('reset-button');
 const tryAgainButton = document.getElementById('try-again-button');
 const winText = document.getElementById('wins');
@@ -76,12 +77,22 @@ function softReset() {
     pickAllowed = true;
 }
 
+// hard reset
 resetButton.addEventListener('click', () => {
+    // delete the extra cups
+    for (let i = totalCups - 1; i > 0; i--) {
+        const target = document.getElementById(`cup-${i}`);
+        target.remove();
+    }
+    // reset vars / dom
     totalCups = 1;
     lastLocation = 0;
     pickAllowed = true;
     wins = 0;
     tries = 0;
+    winText.textContent = 0;
+    lossText.textContent = 0;
+    totalText.textContent = 0;
 });
 
 // try again button
@@ -89,6 +100,12 @@ tryAgainButton.addEventListener('click', () => {
     softReset();
 });
 
+// remove cup
+removeCupButton.addEventListener('click', () => {
+    softReset();
+    const target = document.getElementById(`cup-${totalCups - 1}`);
+    target.remove();
+});
 // add new cup
 addCupButton.addEventListener('click', () => {
     softReset();
