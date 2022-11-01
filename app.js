@@ -60,7 +60,11 @@ function handleGuess(guessId) {
     // increment tries
     tries++;
 
-    // update the DOM to show this change to the user (including the losses, not tracked directly in state)
+    updateDom();
+}
+
+// update the DOM to show changes to the user
+function updateDom() {
     winText.textContent = wins;
     lossText.textContent = tries - wins;
     totalText.textContent = tries;
@@ -95,9 +99,7 @@ resetButton.addEventListener('click', () => {
     pickAllowed = true;
     wins = 0;
     tries = 0;
-    winText.textContent = 0;
-    lossText.textContent = 0;
-    totalText.textContent = 0;
+    updateDom();
 });
 
 // try again button
@@ -118,4 +120,11 @@ removeCupButton.addEventListener('click', () => {
 addCupButton.addEventListener('click', () => {
     softReset();
     addCup();
+});
+
+const addALot = document.getElementById('add-a-lot');
+addALot.addEventListener('click', () => {
+    for (let i = 0; i < 1000; i++) {
+        addCup();
+    }
 });
