@@ -2,6 +2,7 @@
 const cupHead = document.getElementById('cup-0');
 const addCupButton = document.getElementById('add-cup');
 const resetButton = document.getElementById('reset-button');
+const tryAgainButton = document.getElementById('try-again-button');
 const winText = document.getElementById('wins');
 const lossText = document.getElementById('losses');
 const totalText = document.getElementById('total');
@@ -10,13 +11,15 @@ const totalText = document.getElementById('total');
 let totalCups = 1;
 // track last win to mark what to undo instead of looping over everything bc '''performance'''
 let lastLocation = 0;
+// and to not desync that here's a bool that blocks clicking twice
+let pickAllowed = true;
 // counts
 let wins = 0;
 let tries = 0;
 
 // set up first cup listener
 cupHead.addEventListener('click', () => {
-    handleGuess('cup-0');
+    if (pickAllowed === true) handleGuess('cup-0');
 });
 
 function addCup() {
@@ -28,7 +31,7 @@ function addCup() {
     document.getElementById('cup-box').appendChild(newCup);
     // add event listener to the new cup
     newCup.addEventListener('click', () => {
-        handleGuess(newCup.getAttribute('id'));
+        if (pickAllowed === true) handleGuess(newCup.getAttribute('id'));
     });
     totalCups++;
 }
@@ -36,16 +39,18 @@ function addCup() {
 function handleGuess(guessId) {
     // get random number and the index of the guess
     const ballLocation = Math.floor(Math.random() * totalCups);
-    // set the correct location so it can be unset by the reset button
+    // set the correct location so it can be unset by the reset button and block user from trying again
     lastLocation = ballLocation;
+    pickAllowed = false;
     // then grab the appropriate container element for the correct guess from the DOM
     const correctLocation = document.getElementById(`cup-${ballLocation}`);
 
-    // hide the correct cup and show the correct ball
+    // hide the correct cup and show the correct ball and try again button
     const cupImg = correctLocation.firstElementChild;
     const ballImg = correctLocation.lastElementChild;
     cupImg.classList.add('hidden');
     ballImg.classList.remove('hidden');
+    tryAgainButton.classList.remove('hidden');
 
     // then if the user guess is correct, increment the correct guesses
     if (guessId === `cup-${ballLocation}`) {
@@ -60,13 +65,15 @@ function handleGuess(guessId) {
     totalText.textContent = tries;
 }
 
-// reset button
+// try again button
 resetButton.addEventListener('click', () => {
     const target = document.getElementById(`cup-${lastLocation}`);
     const targetCup = target.firstElementChild;
     const targetBall = target.lastElementChild;
+    tryAgainButton.classList.add('hidden');
     targetCup.classList.remove('hidden');
     targetBall.classList.add('hidden');
+    pickAllowed = true;
 });
 
 // add new cup
