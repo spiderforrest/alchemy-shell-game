@@ -1,11 +1,130 @@
-/* Imports */
+// get the one cup that's in html
+const cupHead = document.getElementById('cup-0');
+const addCupButton = document.getElementById('add-cup');
+const removeCupButton = document.getElementById('remove-cup');
+const resetButton = document.getElementById('reset-button');
+const tryAgainButton = document.getElementById('try-again-button');
+const winText = document.getElementById('wins');
+const lossText = document.getElementById('losses');
+const totalText = document.getElementById('total');
 
-/* Get DOM Elements */
+// keep track of how many cups
+let lastCupIndex = 0;
+// track last win to mark what to undo instead of looping over everything bc '''performance'''
+let lastLocation = 0;
+// and to not desync that here's a bool that blocks clicking twice
+let pickAllowed = true;
+// counts
+let wins = 0;
+let tries = 0;
 
-/* State */
+// set up first cup listener
+cupHead.addEventListener('click', () => {
+    if (pickAllowed === true) handleGuess('cup-0');
+});
 
-/* Events */
+function addCup() {
+    lastCupIndex++;
+    // clone the existing cup div
+    const newCup = cupHead.cloneNode(true);
+    // generate unique id for the cup
+    newCup.setAttribute('id', `cup-${lastCupIndex}`);
+    // put the cup on the page
+    document.getElementById('cup-box').appendChild(newCup);
+    // add event listener to the new cup
+    newCup.addEventListener('click', () => {
+        if (pickAllowed === true) handleGuess(newCup.getAttribute('id'));
+    });
+}
 
-/* Display Functions */
+function handleGuess(guessId) {
+    // get random number and the index of the guess
+    const ballLocation = Math.floor(Math.random() * lastCupIndex);
+    // set the correct location so it can be unset by the reset button and block user from trying again
+    lastLocation = ballLocation;
+    pickAllowed = false;
+    // then grab the appropriate container element for the correct guess from the DOM
+    const correctLocation = document.getElementById(`cup-${ballLocation}`);
 
-// (don't forget to call any display functions you want to run on page load!)
+    // hide the correct cup and show the correct ball and try again button
+    const cupImg = correctLocation.firstElementChild;
+    const ballImg = correctLocation.lastElementChild;
+    cupImg.classList.add('hidden');
+    ballImg.classList.remove('hidden');
+    tryAgainButton.classList.remove('hidden');
+
+    // then if the user guess is correct, increment the correct guesses
+    if (guessId === `cup-${ballLocation}`) {
+        wins++;
+    }
+    // increment tries
+    tries++;
+
+    updateDom();
+}
+
+// update the DOM to show changes to the user
+function updateDom() {
+    winText.textContent = wins;
+    lossText.textContent = tries - wins;
+    totalText.textContent = tries;
+}
+
+// reset to try again, preserve counts/status
+function softReset() {
+    // reallow clicks
+    pickAllowed = true;
+    // hide button
+    tryAgainButton.classList.add('hidden');
+    // make sure we don't error trying to remove a non existent cup
+    if (lastLocation > lastCupIndex) return;
+    // get and toggle images' visibility
+    const target = document.getElementById(`cup-${lastLocation}`);
+    const targetCup = target.firstElementChild;
+    const targetBall = target.lastElementChild;
+    targetCup.classList.remove('hidden');
+    targetBall.classList.add('hidden');
+}
+
+// hard reset
+resetButton.addEventListener('click', () => {
+    // delete the extra cups
+    for (let i = lastCupIndex; i > 0; i--) {
+        const target = document.getElementById(`cup-${i}`);
+        target.remove();
+    }
+    // reset vars / dom
+    lastCupIndex = 0;
+    lastLocation = 0;
+    pickAllowed = true;
+    wins = 0;
+    tries = 0;
+    updateDom();
+});
+
+// try again button
+tryAgainButton.addEventListener('click', () => {
+    softReset();
+});
+
+// remove cup
+removeCupButton.addEventListener('click', () => {
+    softReset();
+    if (lastCupIndex === 0) return;
+    const target = document.getElementById(`cup-${lastCupIndex}`);
+    lastCupIndex--;
+    target.remove();
+});
+
+// add new cup
+addCupButton.addEventListener('click', () => {
+    softReset();
+    addCup();
+});
+
+const addALot = document.getElementById('add-a-lot');
+addALot.addEventListener('click', () => {
+    for (let i = 0; i < 1000; i++) {
+        addCup();
+    }
+});
