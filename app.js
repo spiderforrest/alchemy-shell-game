@@ -24,17 +24,17 @@ cupHead.addEventListener('click', () => {
 });
 
 function addCup() {
+    lastCupIndex++;
     // clone the existing cup div
     const newCup = cupHead.cloneNode(true);
     // generate unique id for the cup
     newCup.setAttribute('id', `cup-${lastCupIndex}`);
-    // add the cup to the list
+    // put the cup on the page
     document.getElementById('cup-box').appendChild(newCup);
     // add event listener to the new cup
     newCup.addEventListener('click', () => {
         if (pickAllowed === true) handleGuess(newCup.getAttribute('id'));
     });
-    lastCupIndex++;
 }
 
 function handleGuess(guessId) {
@@ -68,20 +68,25 @@ function handleGuess(guessId) {
 
 // reset to try again, preserve counts/status
 function softReset() {
+    // reallow clicks
+    pickAllowed = true;
+    // hide button
+    tryAgainButton.classList.add('hidden');
+    // make sure we don't error trying to remove a non existent cup
+    if (lastLocation > lastCupIndex) return;
+    // get and toggle images' visibility
     const target = document.getElementById(`cup-${lastLocation}`);
     const targetCup = target.firstElementChild;
     const targetBall = target.lastElementChild;
-    tryAgainButton.classList.add('hidden');
     targetCup.classList.remove('hidden');
     targetBall.classList.add('hidden');
-    pickAllowed = true;
 }
 
 // hard reset
 resetButton.addEventListener('click', () => {
     // delete the extra cups
     for (let i = lastCupIndex; i > 0; i--) {
-        const target = document.getElementById(`cup-${i - 1}`);
+        const target = document.getElementById(`cup-${i}`);
         target.remove();
     }
     // reset vars / dom
@@ -104,7 +109,7 @@ tryAgainButton.addEventListener('click', () => {
 removeCupButton.addEventListener('click', () => {
     softReset();
     if (lastCupIndex === 0) return;
-    const target = document.getElementById(`cup-${lastCupIndex - 1}`);
+    const target = document.getElementById(`cup-${lastCupIndex}`);
     lastCupIndex--;
     target.remove();
 });
