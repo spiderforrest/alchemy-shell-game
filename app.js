@@ -42,9 +42,8 @@ function handleGuess(guessId) {
     const correctLocation = document.getElementById(`cup-${ballLocation}`);
 
     // hide the correct cup and show the correct ball
-    console.log(correctLocation);
-    const cupImg = correctLocation.firstChild;
-    const ballImg = correctLocation.lastChild;
+    const cupImg = correctLocation.firstElementChild;
+    const ballImg = correctLocation.lastElementChild;
     cupImg.classList.add('hidden');
     ballImg.classList.remove('hidden');
 
@@ -64,8 +63,8 @@ function handleGuess(guessId) {
 // reset button
 resetButton.addEventListener('click', () => {
     const target = document.getElementById(`cup-${lastLocation}`);
-    const targetCup = target.firstChild;
-    const targetBall = target.lastChild;
+    const targetCup = target.firstElementChild;
+    const targetBall = target.lastElementChild;
     targetCup.classList.remove('hidden');
     targetBall.classList.add('hidden');
 });
