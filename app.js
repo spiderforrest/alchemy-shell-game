@@ -65,8 +65,8 @@ function handleGuess(guessId) {
     totalText.textContent = tries;
 }
 
-// try again button
-resetButton.addEventListener('click', () => {
+// reset to try again, preserve counts/status
+function softReset() {
     const target = document.getElementById(`cup-${lastLocation}`);
     const targetCup = target.firstElementChild;
     const targetBall = target.lastElementChild;
@@ -74,9 +74,23 @@ resetButton.addEventListener('click', () => {
     targetCup.classList.remove('hidden');
     targetBall.classList.add('hidden');
     pickAllowed = true;
+}
+
+resetButton.addEventListener('click', () => {
+    totalCups = 1;
+    lastLocation = 0;
+    pickAllowed = true;
+    wins = 0;
+    tries = 0;
+});
+
+// try again button
+tryAgainButton.addEventListener('click', () => {
+    softReset();
 });
 
 // add new cup
 addCupButton.addEventListener('click', () => {
+    softReset();
     addCup();
 });
